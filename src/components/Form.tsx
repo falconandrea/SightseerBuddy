@@ -16,48 +16,26 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
-
-const interests = [
-  {
-    id: "cultural_experiences",
-    label: "Cultural Experiences",
-  },
-  {
-    id: "family_friendly",
-    label: "Family-Friendly",
-  },
-  {
-    id: "food",
-    label: "Food",
-  },
-  {
-    id: "health_wellness",
-    label: "Health & Wellness",
-  },
-  {
-    id: "monuments",
-    label: "Monuments",
-  },
-  {
-    id: "religious_sites",
-    label: "Religious Sites",
-  },
-  {
-    id: "shopping",
-    label: "Shopping",
-  },
-  {
-    id: "sightseeing",
-    label: "Sightseeing",
-  },
-] as const;
+import { useState } from "react";
+import { interests, roles } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import Link from "next/link";
 
 const formSchema = z.object({
   city: z.string().min(2, {
-    message: "Too short",
+    message: "Insert city",
   }),
   days: z.coerce.number().min(1, {
     message: "At least 1 day",
+  }),
+  role: z.string().min(1, {
+    message: "Select role",
   }),
   interests: z.array(z.string()).refine((value) => value.some((item) => item), {
     message: "You have to select at least one item.",
@@ -65,18 +43,36 @@ const formSchema = z.object({
 });
 
 export function HomeForm() {
+  const [message, setMessage] = useState<string>("");
+  const [error, setError] = useState<string>("");
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       city: "",
       days: 1,
       interests: ["food", "sightseeing"],
+      role: "expert traveler",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  const isLoading = form.formState.isLoading;
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      const response = await fetch("/api/create", {
+        method: "POST",
+        body: JSON.stringify(values),
+      });
+      const data = await response.json();
+      setMessage(data.data);
+      setError("");
+      form.reset();
+    } catch (error: any) {
+      setError(error);
+      setMessage("");
+    }
+  };
 
   return (
     <Form {...form}>
@@ -115,6 +111,37 @@ export function HomeForm() {
         />
         <FormField
           control={form.control}
+          name="role"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Role for your Sightseer Buddy</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a verified email to display" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {roles.map((item) => (
+                    <SelectItem key={item.id} value={item.id}>
+                      {item.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormDescription className="text-xs">
+                For info about the roles please click{" "}
+                <Link href="/examples/forms" className="underline">
+                  here
+                </Link>
+                .
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="interests"
           render={() => (
             <FormItem>
@@ -122,39 +149,41 @@ export function HomeForm() {
                 <FormLabel className="text-base">Interests</FormLabel>
                 <FormDescription>Select your interests.</FormDescription>
               </div>
-              {interests.map((item) => (
-                <FormField
-                  key={item.id}
-                  control={form.control}
-                  name="interests"
-                  render={({ field }) => {
-                    return (
-                      <FormItem
-                        key={item.id}
-                        className="flex flex-row items-start space-x-3 space-y-0"
-                      >
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value?.includes(item.id)}
-                            onCheckedChange={(checked) => {
-                              return checked
-                                ? field.onChange([...field.value, item.id])
-                                : field.onChange(
-                                    field.value?.filter(
-                                      (value) => value !== item.id
-                                    )
-                                  );
-                            }}
-                          />
-                        </FormControl>
-                        <FormLabel className="font-normal">
-                          {item.label}
-                        </FormLabel>
-                      </FormItem>
-                    );
-                  }}
-                />
-              ))}
+              <div className="flex flex-wrap">
+                {interests.map((item) => (
+                  <FormField
+                    key={item.id}
+                    control={form.control}
+                    name="interests"
+                    render={({ field }) => {
+                      return (
+                        <FormItem
+                          key={item.id}
+                          className="flex flex-row items-start space-x-3 space-y-0 w-1/2 mb-2"
+                        >
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value?.includes(item.id)}
+                              onCheckedChange={(checked) => {
+                                return checked
+                                  ? field.onChange([...field.value, item.id])
+                                  : field.onChange(
+                                      field.value?.filter(
+                                        (value) => value !== item.id
+                                      )
+                                    );
+                              }}
+                            />
+                          </FormControl>
+                          <FormLabel className="font-normal">
+                            {item.label}
+                          </FormLabel>
+                        </FormItem>
+                      );
+                    }}
+                  />
+                ))}
+              </div>
               <FormMessage />
             </FormItem>
           )}
