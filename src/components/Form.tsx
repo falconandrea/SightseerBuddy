@@ -78,7 +78,6 @@ export function HomeForm(props: {
       if (data.status !== 200) {
         throw new Error(data.data);
       }
-      await new Promise((resolve) => setTimeout(resolve, 3000));
       props.setMessage(data.data);
       props.setIsLoading(false);
       form.reset();
