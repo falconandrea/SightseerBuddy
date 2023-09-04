@@ -16,16 +16,23 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
-import { useState } from "react";
-import { interests, roles } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import { interests, roles, roleDescriptions } from "@/lib/utils";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
-import Link from "next/link";
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const formSchema = z.object({
   city: z.string().min(2, {
@@ -42,8 +49,10 @@ const formSchema = z.object({
   }),
 });
 
-export function HomeForm() {
-  const [message, setMessage] = useState<string>("");
+export function HomeForm(props: {
+  setMessage: (message: string) => void;
+  setIsLoading: (isLoading: boolean) => void;
+}) {
   const [error, setError] = useState<string>("");
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -56,27 +65,33 @@ export function HomeForm() {
     },
   });
 
-  const isLoading = form.formState.isLoading;
-
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    props.setMessage("");
+    props.setIsLoading(true);
+    setError("");
     try {
       const response = await fetch("/api/create", {
         method: "POST",
         body: JSON.stringify(values),
       });
       const data = await response.json();
-      setMessage(data.data);
-      setError("");
+      if (data.status !== 200) {
+        throw new Error(data.data);
+      }
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      props.setMessage(data.data);
+      props.setIsLoading(false);
       form.reset();
     } catch (error: any) {
-      setError(error);
-      setMessage("");
+      setError(error.message);
+      props.setIsLoading(false);
     }
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        {/* City */}
         <FormField
           control={form.control}
           name="city"
@@ -90,6 +105,8 @@ export function HomeForm() {
             </FormItem>
           )}
         />
+
+        {/* Days */}
         <FormField
           control={form.control}
           name="days"
@@ -109,6 +126,8 @@ export function HomeForm() {
             </FormItem>
           )}
         />
+
+        {/* Roles */}
         <FormField
           control={form.control}
           name="role"
@@ -130,16 +149,32 @@ export function HomeForm() {
                 </SelectContent>
               </Select>
               <FormDescription className="text-xs">
-                For info about the roles please click{" "}
-                <Link href="/examples/forms" className="underline">
-                  here
-                </Link>
-                .
+                Choose how you want the artificial intelligence to act and
+                provide advice. Each role will influence how the travel plan is
+                created and presented. Click{" "}
+                <Dialog>
+                  <DialogTrigger className="underline">here</DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>About the roles</DialogTitle>
+                      <DialogDescription>
+                        {roleDescriptions.map((item, index) => (
+                          <p key={index} className="mt-2">
+                            <strong>{item.title}</strong>: {item.text}
+                          </p>
+                        ))}
+                      </DialogDescription>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>{" "}
+                for more information.
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
+
+        {/* Interests */}
         <FormField
           control={form.control}
           name="interests"
@@ -189,6 +224,7 @@ export function HomeForm() {
           )}
         />
         <Button type="submit">Submit</Button>
+        {error && <p className="text-red-600">{error}</p>}
       </form>
     </Form>
   );
