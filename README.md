@@ -2,6 +2,16 @@
 
 SightseerBuddy is a vacation planning bot powered by OpenAI's ChatGPT API, built using Next.js, Tailwind CSS and TypeScript. This bot assists users in creating personalized travel itineraries for their visits to a specific city. With SightseerBuddy, users can easily input their preferences, such as the city they plan to visit, the duration of their stay, and their interests, and receive a day-by-day plan for their vacation.
 
+- **Shadcn UI**: [Shadcn UI](https://ui.shadcn.com/) for our user interface components, ensuring a polished and user-friendly design.
+
+- **Next.js**: SightseerBuddy is built using Next.js, a React framework that allows for efficient server rendering and seamless client-side navigation.
+
+- **TypeScript**: I use TypeScript to enhance code quality and maintainability, providing a statically typed development environment.
+
+- **OpenAI API**: To offer intelligent and context-aware travel recommendations, we integrate the OpenAI API, which powers our chat-based conversation with users.
+
+- **Tailwind CSS**: The application is styled with Tailwind CSS, a utility-first CSS framework that enables rapid UI development with flexibility and consistency.
+
 ## Features
 
 - **User-Friendly Interface**: SightseerBuddy offers a simple and intuitive interface for users to input their travel details and preferences.
