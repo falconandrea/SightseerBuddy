@@ -44,10 +44,6 @@ SightseerBuddy is a vacation planning bot powered by OpenAI's ChatGPT API, built
 1. Run the application: `npm run dev`
 2. Access the application through your web browser at `http://localhost:3000`.
 
-### Demo
-
-Include a brief description of how to use the application with screenshots or gifs.
-
 ## Contributing
 
 Contributions are welcome! If you'd like to contribute to SightseerBuddy, please follow these steps:
