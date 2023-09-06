@@ -41,6 +41,7 @@ export async function POST(req: Request, res: NextResponse) {
     // Create a list of interests
     const interestsString = body.interests.join(", ");
 
+    /*
     // Create Prompt for OpenAI
     const prompt = `Generate a ${body.days}-day travel plan in ${body.city}. The main interests for this trip are: ${interestsString}. Create a daily itinerary that covers these activities and places of interest, acting as a ${body.role} and keeping the output concise. Return me the response as html, only the body tag content.`;
 
@@ -72,7 +73,12 @@ export async function POST(req: Request, res: NextResponse) {
       message = message.replaceAll("<ul>", "<ul class='list-disc pl-4'>");
       message = message.replaceAll("<p>", "<p class='my-2'>");
     }
+    */
 
+    // Wait 3 seconds
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+
+    const message = "TEST";
     // Return response
     return NextResponse.json({
       status: 200,

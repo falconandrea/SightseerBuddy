@@ -8,8 +8,8 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   return (
-    <div className="bg-gray-100 pt-8 pb-4 flex flex-col justify-center items-center">
-      <div className="bg-white p-8 rounded-md shadow-md w-full max-w-md">
+    <div className="bg-gray-100 pt-8 pb-4 flex flex-col justify-center items-center px-4">
+      <div className="bg-white p-8 rounded-md shadow-md w-full md:max-w-md">
         <h1 className="text-3xl font-semibold text-center mb-4">
           SightseerBuddy
         </h1>
@@ -21,13 +21,15 @@ export default function Home() {
       </div>
 
       {isLoading && (
-        <div className="bg-white p-8 rounded-md shadow-md w-full max-w-2xl mt-4">
-          <h4 className="text-2xl font-semibold text-center">Loading...</h4>
+        <div className="bg-white p-8 rounded-md shadow-md w-full mt-4 md:max-w-2xl">
+          <h4 className="text-xl font-semibold text-center">
+            Loading.. may take up to 30 seconds...
+          </h4>
         </div>
       )}
       {message && (
         <div
-          className="bg-white p-8 rounded-md shadow-md w-full max-w-2xl mt-4"
+          className="bg-white p-8 rounded-md shadow-md w-full mt-4 md:max-w-2xl"
           dangerouslySetInnerHTML={{ __html: message }}
         ></div>
       )}
