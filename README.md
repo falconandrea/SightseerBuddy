@@ -31,17 +31,32 @@ SightseerBuddy is a vacation planning bot powered by OpenAI's ChatGPT API, built
 
 ### Installation
 
-1. Clone this repository: `git clone https://github.com/falconandrea/sightseerbuddy.git`
-2. Navigate to the project directory: `cd sightseerbuddy`
-3. Install dependencies: `npm install`
+1. Clone this repository: 
+```shell
+git clone https://github.com/falconandrea/sightseerbuddy.git
+```
+2. Navigate to the project directory: 
+```shell
+cd sightseerbuddy
+```
+3. Install dependencies: 
+```shell
+npm install
+```
 
 ### Configuration
 
-1. Rename the `.env.example` file to `.env` and add your OpenAI API key.
+1. Copy the `.env.example` file to `.env` and add your OpenAI API key.
+```shell
+cp .env.example .env
+```
 
 ### Usage
 
-1. Run the application: `npm run dev`
+1. Run the application: 
+```shell
+npm run dev
+```
 2. Access the application through your web browser at `http://localhost:3000`.
 
 ## Contributing
